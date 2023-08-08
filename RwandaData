@@ -13,7 +13,7 @@ var geometry =
           [31.361693027572386, -0.586292567202803]]], null, false);
 /***** End of imports. If edited, may not auto-convert in the playground. *****/
 
-//Open VIIRS data, clip to Bangladesh
+//Open VIIRS data, clip to Rwanda
 
 var lights = ee.ImageCollection('NOAA/VIIRS/DNB/MONTHLY_V1/VCMSLCFG')
                   .filter(ee.Filter.date('2020-01-01', '2020-12-31')) 
