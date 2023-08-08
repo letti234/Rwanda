@@ -1,0 +1,42 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[28.439329746322386, -0.586292567202803],
+          [28.439329746322386, -3.2871347823082644],
+          [31.361693027572386, -3.2871347823082644],
+          [31.361693027572386, -0.586292567202803]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+//Open MODIS data and clip to geometry
+
+var data = ee.ImageCollection('MODIS/006/MOD44B')
+.map(function(image){return image.clip(BGD)});
+
+
+//This function converts our image collection into a stack of bands
+function newCollectionToImage(collection){
+var stack = ee.Image(collection.iterate(function(img, prev) {
+return ee.Image(prev).addBands(img);
+}, ee.Image(1)));
+ 
+stack = stack.select(ee.List.sequence(1, stack.bandNames().size().subtract(1)));
+return stack;
+}
+
+var lightsStack = newCollectionToImage(lights);
+
+
+Export.image.toDrive({
+  image: lightsStack,
+  scale: 450,
+  description: 'RwandaVIIRS2020',
+  fileFormat: 'GEOTIFF',
+  folder: "Refugee camps and natural capital",
+  maxPixels: 200000000
+});
