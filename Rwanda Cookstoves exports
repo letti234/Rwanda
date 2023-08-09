@@ -1,6 +1,7 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var geometry = 
     /* color: #d63000 */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -16,27 +17,97 @@ var geometry =
 //Open MODIS data and clip to geometry
 
 var data = ee.ImageCollection('MODIS/006/MOD44B')
-.map(function(image){return image.clip(BGD)});
+.map(function(image){return image.clip(geometry)});
 
+print(data, "MODIS image clipped to Rwanda bounding box");
 
-//This function converts our image collection into a stack of bands
-function newCollectionToImage(collection){
-var stack = ee.Image(collection.iterate(function(img, prev) {
-return ee.Image(prev).addBands(img);
-}, ee.Image(1)));
- 
-stack = stack.select(ee.List.sequence(1, stack.bandNames().size().subtract(1)));
-return stack;
-}
+//////////////////////////////////////////////////////////////////////////
+//
+//Year 2000 data exports
+//
+//////////////////////////////////////////////////////////////////////////
 
-var lightsStack = newCollectionToImage(lights);
+//Tree cover
+var tree00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+.select("Percent_Tree_Cover").toBands();
+
+var visParams = {min: 0, max: 100, palette: ['white', 'darkgreen'] 
+};
+
+Map.addLayer(tree00, visParams, "Forest cover in 2000");
+print(tree00, "Tree cover 2000 image");
 
 
 Export.image.toDrive({
-  image: lightsStack,
-  scale: 450,
-  description: 'RwandaVIIRS2020',
+  image: tree00,
+  scale: 250,
+  description: '2000_PctForest',
   fileFormat: 'GEOTIFF',
-  folder: "Refugee camps and natural capital",
-  maxPixels: 200000000
+  folder: "Cookstove_exports",
+  maxPixels: 9e10
 });
+
+
+//Nontree vegetative cover
+var veg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
+
+Map.addLayer(veg00, visParams, "Vegetation cover in 2000");
+print(veg00, "Vegetation cover 2000 image");
+
+
+
+Export.image.toDrive({
+  image: veg00,
+  scale: 250,
+  description: '2000_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10
+});
+
+
+
+//Nontree nonvegetative cover
+
+var nonveg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+.select("Percent_NonVegetated").toBands();
+
+var visParams = {min: 0, max: 100, palette: ['white', 'black'] 
+};
+
+Map.addLayer(nonveg00, visParams, "Nonvegetative cover in 2000");
+print(nonveg00, "Nonvegetative cover 2000 image");
+
+
+
+Export.image.toDrive({
+  image: nonveg00,
+  scale: 250,
+  description: '2000_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10
+});
+
+
+
+//Quality
+
+var quality00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+.select("Quality").toBands();
+
+print(quality00, "Image quality assessment 2000");
+
+
+// Inspect quality image
+var stats = quality00.reduceRegion({
+  reducer: ee.Reducer.minMax(),
+  scale: 250 // Set the scale according to your data
+});
+
+print(stats, "Reduction stats of image");
+
+var visParams = {min: 0, max: 255, palette: ['white', 'black'] 
+};
+Map.addLayer(quality00, visParams, "Image quality assessment 2000");
