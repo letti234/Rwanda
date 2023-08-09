@@ -1,18 +1,5 @@
-/**** Start of imports. If edited, may not auto-convert in the playground. ****/
-var geometry = 
-    /* color: #d63000 */
-    /* shown: false */
-    /* displayProperties: [
-      {
-        "type": "rectangle"
-      }
-    ] */
-    ee.Geometry.Polygon(
-        [[[28.439329746322386, -0.586292567202803],
-          [28.439329746322386, -3.2871347823082644],
-          [31.361693027572386, -3.2871347823082644],
-          [31.361693027572386, -0.586292567202803]]], null, false);
-/***** End of imports. If edited, may not auto-convert in the playground. *****/
+var geometry = ee.FeatureCollection("FAO/GAUL/2015/level0")
+.filter(ee.Filter.eq("ADM0_NAME", "Rwanda"));
 
 //Open MODIS data and clip to geometry
 
@@ -96,8 +83,9 @@ Export.image.toDrive({
 
 //Quality is stored in 8 "bits" for each pixel. I'm not entirely sure how
 //to work with this variable
-//Minimum is zero and maximum is 255. The values are somehow derived based on
-//an 8-tier accuracy assessment: see https://lpdaac.usgs.gov/documents/459/MOD44B_User_Guide_V5.pdf
+//Minimum is zero and maximum is 255. The values are derived from 
+//an 8-tier accuracy assessment.
+//See https://lpdaac.usgs.gov/documents/459/MOD44B_User_Guide_V5.pdf
 
 var quality00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Quality").toBands();
@@ -109,9 +97,56 @@ var visParams = {min: 0, max: 255, palette: ['white', 'black']
 Map.addLayer(quality00, visParams, "Image quality assessment 2000");
 
 
-//Asked GIS Stack Exchange for help!
+//Identifying "bad" pixels - ChatGPT's solution
 
+// Define a function to identify "bad" pixels
+var identifyBadPixels = function(image) {
+  // Use the right shift operator (>>) to shift the bits yto the least significant bits
+  var shiftedImage = image.rightShift(2); // Shift by 2 bits
+  
+  // Use the modulo operator (%) to check if the remainder is greater than or equal to 2
+  var badPixelMask = shiftedImage.mod(4).gte(2);
+  
+  // Return the mask
+  return badPixelMask;
+};
+
+// Apply the function to your image
+var badPixelMask = identifyBadPixels(quality00);
+
+// Display the "bad" pixels on the map
+Map.addLayer(badPixelMask, {}, 'Bad Pixels');
+
+
+
+
+
+
+
+
+
+
+ 
+//Image quality flagging using bits - from https://spatialthoughts.com/2021/08/19/qa-bands-bitmasks-gee/
+// Helper function to extract the values from specific bits
+// The input parameter can be a ee.Number() or ee.Image()
+// Code adapted from https://gis.stackexchange.com/a/349401/5160
+var bitwiseExtract = function(input, fromBit, toBit) {
+  var maskSize = ee.Number(1).add(toBit).subtract(fromBit)
+  var mask = ee.Number(1).leftShift(maskSize).subtract(1)
+  return input.rightShift(fromBit).bitwiseAnd(mask)
+}
+
+
+var qualMask00 = bitwiseExtract(quality00, 0, 8).lte(1);
+print(qualMask00);
+Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Bad pixel classification");
+
+
+//Asked GIS Stack Exchange for help!
 //https://gis.stackexchange.com/questions/464904/working-with-8-bit-image-in-earth-engine
+
+
 
 
 
