@@ -84,7 +84,7 @@ print(nonveg00, "Nonvegetative cover 2000 image");
 Export.image.toDrive({
   image: nonveg00,
   scale: 250,
-  description: '2000_PctVeg',
+  description: '2000_PctNonveg',
   fileFormat: 'GEOTIFF',
   folder: "Cookstove_exports",
   maxPixels: 9e10
