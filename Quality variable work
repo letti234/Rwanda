@@ -30,7 +30,7 @@ print(quality00, "Image quality assessment 2000");
 //Note that this map isn't helpful since  the values cannot be interpreted on a continuous scale. 
 //For example, high values represent 1's in the 6th-8th bit.
 
-Map.addLayer(quality00,  {min: 0, max: 255, palette: ['white', 'red']}, "Raw image quality indicators");
+//Map.addLayer(quality00,  {min: 0, max: 255, palette: ['white', 'red']}, "Raw image quality indicators");
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ var identifyBadPixels = function(image) {
 var badPixelMask = identifyBadPixels(quality00);
 
 // Display the "bad" pixels on the map
-Map.addLayer(badPixelMask, {}, 'Bad Pixels (ChatGPT');
+//Map.addLayer(badPixelMask, {}, 'Bad Pixels (ChatGPT');
 
 
 
@@ -79,12 +79,13 @@ var bitwiseExtract = function(input, fromBit, toBit) {
 }
 
 
-var qualMask00 = bitwiseExtract(quality00, 0, 8).lte(1);
-print(qualMask00);
-Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Bad pixel classification");
+var qualMask00 = bitwiseExtract(quality00, 0, 7).lte(1);
+print(qualMask00, "Binary quality mask based on blog");
+Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pixel classification");
 
 
-//This is certainly a more stringent criteria. But I would prefer to export the pixel's number of 1's!
+//This is certainly a more stringent criteria. But it doesn't seem responsive to the set criteria.
+//Change .lte(1) to .lte(8) and the map is pretty much the same.
 
 
 
@@ -94,7 +95,4 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Bad pixe
 // Counting number of bad bits - from ChatGPT
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
