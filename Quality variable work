@@ -8,96 +8,38 @@ var data = ee.ImageCollection('MODIS/006/MOD44B')
 
 print(data, "MODIS image clipped to Rwanda bounding box");
 
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//Year 2000 data exports
+//Quality variable
 //
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//Tree cover
-var tree00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
-.select("Percent_Tree_Cover").toBands();
+//Quality is stored in 8 "bits" for each pixel, but the value is reported as numeric. Each numeric
+//value from 0 to 255 is a combination of eight binary indicators.
 
-var visParams = {min: 0, max: 100, palette: ['white', 'darkgreen'] 
-};
-
-Map.addLayer(tree00, visParams, "Forest cover in 2000");
-print(tree00, "Tree cover 2000 image");
-
-
-Export.image.toDrive({
-  image: tree00,
-  scale: 250,
-  description: '2000_PctForest',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
-
-
-//Nontree vegetative cover
-var veg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
-.select("Percent_NonTree_Vegetation").toBands();
-
-Map.addLayer(veg00, visParams, "Vegetation cover in 2000");
-print(veg00, "Vegetation cover 2000 image");
-
-
-
-Export.image.toDrive({
-  image: veg00,
-  scale: 250,
-  description: '2000_PctVeg',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
-
-
-
-//Nontree nonvegetative cover
-
-var nonveg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
-.select("Percent_NonVegetated").toBands();
-
-var visParams = {min: 0, max: 100, palette: ['white', 'black'] 
-};
-
-Map.addLayer(nonveg00, visParams, "Nonvegetative cover in 2000");
-print(nonveg00, "Nonvegetative cover 2000 image");
-
-
-
-Export.image.toDrive({
-  image: nonveg00,
-  scale: 250,
-  description: '2000_PctNonveg',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
-
-
-
-//Quality
-
-//Quality is stored in 8 "bits" for each pixel. I'm not entirely sure how
-//to work with this variable
-//Minimum is zero and maximum is 255. The values are derived from 
-//an 8-tier accuracy assessment.
+//MODIS states any quality binary value with 2 or more 1's is potentially "bad"
 //See https://lpdaac.usgs.gov/documents/459/MOD44B_User_Guide_V5.pdf
 
+//Subset data
 var quality00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Quality").toBands();
 
+
 print(quality00, "Image quality assessment 2000");
 
-var visParams = {min: 0, max: 255, palette: ['white', 'black'] 
-};
-Map.addLayer(quality00, visParams, "Image quality assessment 2000");
+//Note that this map isn't helpful since  the values cannot be interpreted on a continuous scale. 
+//For example, high values represent 1's in the 6th-8th bit.
+
+Map.addLayer(quality00,  {min: 0, max: 255, palette: ['white', 'red']}, "Raw image quality indicators");
 
 
-//Identifying "bad" pixels - ChatGPT's solution
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Mapping "bad" pixels: >2 1's. From ChatGPT.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+//This is likely wrong - chatGP added this rightShift step to remove 2 of the bits.
 
 // Define a function to identify "bad" pixels
 var identifyBadPixels = function(image) {
@@ -115,22 +57,21 @@ var identifyBadPixels = function(image) {
 var badPixelMask = identifyBadPixels(quality00);
 
 // Display the "bad" pixels on the map
-Map.addLayer(badPixelMask, {}, 'Bad Pixels');
+Map.addLayer(badPixelMask, {}, 'Bad Pixels (ChatGPT');
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Mapping "bad" pixels: >2 1's. From user blog - https://spatialthoughts.com/2021/08/19/qa-bands-bitmasks-gee/
+//
+////////////////////////////////////////////////////////////////////////////////////////////////
+//Probably more accurate than the ChatGPT version. I still want a map with the counts of 1's across
+//the 8-bit object.
 
 
-
-
-
-
-
- 
-//Image quality flagging using bits - from https://spatialthoughts.com/2021/08/19/qa-bands-bitmasks-gee/
 // Helper function to extract the values from specific bits
-// The input parameter can be a ee.Number() or ee.Image()
-// Code adapted from https://gis.stackexchange.com/a/349401/5160
+
 var bitwiseExtract = function(input, fromBit, toBit) {
   var maskSize = ee.Number(1).add(toBit).subtract(fromBit)
   var mask = ee.Number(1).leftShift(maskSize).subtract(1)
@@ -143,10 +84,16 @@ print(qualMask00);
 Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Bad pixel classification");
 
 
-//Asked GIS Stack Exchange for help!
-//https://gis.stackexchange.com/questions/464904/working-with-8-bit-image-in-earth-engine
+//This is certainly a more stringent criteria. But I would prefer to export the pixel's number of 1's!
 
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Counting number of bad bits - from ChatGPT
+//
+////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
