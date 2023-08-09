@@ -109,3 +109,9 @@ var visParams = {min: 0, max: 255, palette: ['white', 'black']
 Map.addLayer(quality00, visParams, "Image quality assessment 2000");
 
 
+//Evaluating each of the 8 bits
+
+
+
+
+
