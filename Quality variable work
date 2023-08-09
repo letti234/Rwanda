@@ -92,7 +92,25 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pix
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// Counting number of bad bits - from ChatGPT
+// Extracting bits - from Github tutorial 
+//https://calekochenour.github.io/remote-sensing-textbook/03-beginner/chapter13-data-quality-bitmasks.html
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
+function extract_qa_bits(qa_band, start_bit, end_bit, band_name) {
+  // Initialize QA bit string/pattern to check QA band against
+  var qa_bits = 0;
+  // Add each specified QA bit flag value/string/pattern to the QA bits to check/extract
+  for (var bit = start_bit; bit <= end_bit; bit++) {
+    qa_bits += Math.pow(2, bit); // Same as qa_bits += (1 << bit);
+  }
+  // Return a single band image of the extracted QA bit values
+  return qa_band
+    // Rename output band to specified name
+    .select([0], [band_name])
+    // Check QA band against specified QA bits to see what QA flag values are set
+    .bitwiseAnd(qa_bits)
+    // Get value that matches bitmask documentation
+    // (0 or 1 for single bit,  0-3 or 0-N for multiple bits)
+    .rightShift(start_bit);
+}
