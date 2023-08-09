@@ -94,13 +94,17 @@ Export.image.toDrive({
 
 //Quality
 
+//Quality is stored in 8 "bits" for each pixel. I'm not entirely sure how
+//to work with this variable
+
+
 var quality00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Quality").toBands();
 
 print(quality00, "Image quality assessment 2000");
 
 
-// Inspect quality image
+// Inspect the minimum and maximum values
 var stats = quality00.reduceRegion({
   reducer: ee.Reducer.minMax(),
   scale: 250 // Set the scale according to your data
@@ -108,6 +112,9 @@ var stats = quality00.reduceRegion({
 
 print(stats, "Reduction stats of image");
 
+//Map based on the full range of values
 var visParams = {min: 0, max: 255, palette: ['white', 'black'] 
 };
 Map.addLayer(quality00, visParams, "Image quality assessment 2000");
+
+
