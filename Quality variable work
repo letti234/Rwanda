@@ -73,10 +73,10 @@ var badPixelMask = identifyBadPixels(quality00);
 // Helper function to extract the values from specific bits
 
 var bitwiseExtract = function(input, fromBit, toBit) {
-  var maskSize = ee.Number(1).add(toBit).subtract(fromBit)
-  var mask = ee.Number(1).leftShift(maskSize).subtract(1)
-  return input.rightShift(fromBit).bitwiseAnd(mask)
-}
+  var maskSize = ee.Number(1).add(toBit).subtract(fromBit);
+  var mask = ee.Number(1).leftShift(maskSize).subtract(1);
+  return input.rightShift(fromBit).bitwiseAnd(mask);
+};
 
 
 var qualMask00 = bitwiseExtract(quality00, 0, 7).lte(1);
@@ -86,6 +86,13 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pix
 
 //This is certainly a more stringent criteria. But it doesn't seem responsive to the set criteria.
 //Change .lte(1) to .lte(8) and the map is pretty much the same.
+
+
+
+
+//Export - maybe I can do this in R!
+
+
 
 
 
