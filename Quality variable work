@@ -1,5 +1,17 @@
-var geometry = ee.FeatureCollection("FAO/GAUL/2015/level0")
-.filter(ee.Filter.eq("ADM0_NAME", "Rwanda"));
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #98ff00 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[28.364809275063447, -0.893750338517721],
+          [28.364809275063447, -3.17731309885111],
+          [31.309145212563447, -3.17731309885111],
+          [31.309145212563447, -0.893750338517721]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
 
 //Open MODIS data and clip to geometry
 
@@ -87,11 +99,18 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pix
 //This is certainly a more stringent criteria. But it doesn't seem responsive to the set criteria.
 //Change .lte(1) to .lte(8) and the map is pretty much the same.
 
+//GEE suggestions
 
+var count00 = quality00.bitCount();
 
-
-//Export - maybe I can do this in R!
-
+Export.image.toDrive({
+  image: count,
+  scale: 250,
+  description: '2000_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10
+});
 
 
 
