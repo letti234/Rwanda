@@ -105,7 +105,7 @@ var count00 = quality00.bitCount();
 
 //Export
 Export.image.toDrive({
-  image: count,
+  image: count00,
   scale: 250,
   description: '2000_QualCount',
   fileFormat: 'GEOTIFF',
