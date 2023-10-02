@@ -1,6 +1,7 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var geometry = 
     /* color: #98ff00 */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -93,6 +94,7 @@ var bitwiseExtract = function(input, fromBit, toBit) {
 
 var qualMask00 = bitwiseExtract(quality00, 0, 7).lte(1);
 print(qualMask00, "Binary quality mask based on blog");
+
 Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pixel classification");
 
 
@@ -104,7 +106,7 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pix
 var count00 = quality00.bitCount();
 
 Export.image.toDrive({
-  image: count,
+  image: count00,
   scale: 250,
   description: '2000_QualCount',
   fileFormat: 'GEOTIFF',
