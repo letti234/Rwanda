@@ -80,7 +80,7 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pix
 
 var count00 = quality00.bitCount();
 
-Map.addLayer(count00, {}, "Count of number of 1's in 8-character bit")
+
 
 Export.image.toDrive({
   image: count00,
