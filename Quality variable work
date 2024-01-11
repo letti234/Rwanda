@@ -30,6 +30,9 @@ print(data, "MODIS image clipped to Rwanda bounding box");
 //Quality is stored in 8 "bits" for each pixel, but the value is reported as numeric. Each numeric
 //value from 0 to 255 is a combination of eight binary indicators.
 
+//We can transform the numeric value into 8 bits (an 8-number sequence of 0's and 1's) and then count the number
+//of 1's. Each 1 is a flag for bad data quality.
+
 //MODIS states any quality binary value with 2 or more 1's is potentially "bad"
 //See https://lpdaac.usgs.gov/documents/459/MOD44B_User_Guide_V5.pdf
 
@@ -44,34 +47,6 @@ print(quality00, "Image quality assessment 2000");
 //For example, high values represent 1's in the 6th-8th bit.
 
 //Map.addLayer(quality00,  {min: 0, max: 255, palette: ['white', 'red']}, "Raw image quality indicators");
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Mapping "bad" pixels: >2 1's. From ChatGPT.
-//
-////////////////////////////////////////////////////////////////////////////////////////////////
-
-//This is likely wrong - chatGP added this rightShift step to remove 2 of the bits.
-
-// Define a function to identify "bad" pixels
-var identifyBadPixels = function(image) {
-  // Use the right shift operator (>>) to shift the bits yto the least significant bits
-  var shiftedImage = image.rightShift(2); // Shift by 2 bits
-  
-  // Use the modulo operator (%) to check if the remainder is greater than or equal to 2
-  var badPixelMask = shiftedImage.mod(4).gte(2);
-  
-  // Return the mask
-  return badPixelMask;
-};
-
-// Apply the function to your image
-var badPixelMask = identifyBadPixels(quality00);
-
-// Display the "bad" pixels on the map
-//Map.addLayer(badPixelMask, {}, 'Bad Pixels (ChatGPT');
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -93,7 +68,7 @@ var bitwiseExtract = function(input, fromBit, toBit) {
 
 
 var qualMask00 = bitwiseExtract(quality00, 0, 7).lte(1);
-print(qualMask00, "Binary quality mask based on blog");
+print(qualMask00, "0-1 indicator for whether there are 2 or more quality flags");
 
 Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pixel classification");
 
@@ -104,6 +79,8 @@ Map.addLayer(qualMask00, {min: 0, max: 1, palette: ['white', 'red']} , "Good pix
 //GEE suggestions
 
 var count00 = quality00.bitCount();
+
+Map.addLayer(count00, {}, "Count of number of 1's in 8-character bit")
 
 Export.image.toDrive({
   image: count00,
