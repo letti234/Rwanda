@@ -1,0 +1,45 @@
+/**** Start of imports. If edited, may not auto-convert in the playground. ****/
+var geometry = 
+    /* color: #98ff00 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[28.70661622386918, -0.8644748192930277],
+          [28.70661622386918, -2.9944911039709865],
+          [31.00275880199418, -2.9944911039709865],
+          [31.00275880199418, -0.8644748192930277]]], null, false);
+/***** End of imports. If edited, may not auto-convert in the playground. *****/
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//
+// Determine dry season (Jan-Feb) composites for zonal statistics
+//
+//////////////////////////////////////////////////////////////////////////////////
+
+//June 2017 to August 2016
+var lc_17 = lulc
+  .filterDate("2016-06-01", "2016-08-31")
+.reduce(ee.Reducer.mode());
+ 
+
+// //////////////////////////////////////////////////////////////////////////////////
+// //
+// // Map dry season composites
+// //
+// //////////////////////////////////////////////////////////////////////////////////
+
+var dwVisParams = {
+  min: 0, max:8,
+  palette: ['#419bdf', '#397d49', '#88b053', '#7a87c6', '#e49635', '#dfc35a', '#c4281b', '#a59b8f', '	#b39fe1']
+};
+
+Map.centerObject(camps);
+
+
+Map.addLayer(lc_17, dwVisParams, 'Land cover 2017');
+
+
