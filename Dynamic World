@@ -1,6 +1,7 @@
 /**** Start of imports. If edited, may not auto-convert in the playground. ****/
 var geometry = 
     /* color: #98ff00 */
+    /* shown: false */
     /* displayProperties: [
       {
         "type": "rectangle"
@@ -20,6 +21,12 @@ var geometry =
 //
 //////////////////////////////////////////////////////////////////////////////////
 
+//LULC classifications subset to ROI
+var lulc = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+ .map(function(image){return image.clip(geometry)})
+ .select("label");
+
+
 //June 2017 to August 2016
 var lc_17 = lulc
   .filterDate("2016-06-01", "2016-08-31")
@@ -37,7 +44,7 @@ var dwVisParams = {
   palette: ['#419bdf', '#397d49', '#88b053', '#7a87c6', '#e49635', '#dfc35a', '#c4281b', '#a59b8f', '	#b39fe1']
 };
 
-Map.centerObject(camps);
+Map.centerObject(geometry, 8);
 
 
 Map.addLayer(lc_17, dwVisParams, 'Land cover 2017');
