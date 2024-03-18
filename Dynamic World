@@ -28,7 +28,7 @@ var lulc = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
 
 
 //June 2017 to August 2016
-var lc_17 = lulc
+var lc_16 = lulc
   .filterDate("2016-06-01", "2016-08-31")
 .reduce(ee.Reducer.mode());
  
@@ -47,6 +47,24 @@ var dwVisParams = {
 Map.centerObject(geometry, 8);
 
 
-Map.addLayer(lc_17, dwVisParams, 'Land cover 2017');
+Map.addLayer(lc_16, dwVisParams, 'Land cover 2017');
+
+// //////////////////////////////////////////////////////////////////////////////////
+// //
+// // Export data
+// //
+// //////////////////////////////////////////////////////////////////////////////////
+
+
+Export.image.toDrive({
+  image: lc_16,
+  scale: 10,
+  description: 'RWA_DW_2016',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e12,
+  
+});
+
 
 
