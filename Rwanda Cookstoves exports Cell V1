@@ -144,4 +144,33 @@ var ADM = ADM.map(function(feature) {
   }));
 });
 
+
+//2008
+var forest = data.filter(ee.Filter.date('2008-01-01', '2008-12-31'))
+.select("Percent_Tree_Cover").toBands();
+
+forest= forest.select(['2008_03_05_Percent_Tree_Cover'])
+  .rename(['for_2008']);
+  
+var ADM = ADM.map(function(feature) {
+  return feature.set(forest.reduceRegion({
+    reducer: 'mean', geometry: feature.geometry(), scale: 250,
+    maxPixels: 1e9
+  }));
+});
+
+//2009
+var forest = data.filter(ee.Filter.date('2009-01-01', '2009-12-31'))
+.select("Percent_Tree_Cover").toBands();
+
+forest= forest.select(['2009_03_06_Percent_Tree_Cover'])
+  .rename(['for_2009']);
+  
+var ADM = ADM.map(function(feature) {
+  return feature.set(forest.reduceRegion({
+    reducer: 'mean', geometry: feature.geometry(), scale: 250,
+    maxPixels: 1e9
+  }));
+});
+
 print(ADM.limit(1));
