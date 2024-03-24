@@ -9,10 +9,10 @@ var data = ee.ImageCollection('MODIS/006/MOD44B')
 print(data, "MODIS image clipped to Rwanda");
 
 //Open cell data
-var cells = ee.FeatureCollection("users/salem043/Rwanda/Cell_LL");
+var ADM = ee.FeatureCollection("users/salem043/Rwanda/Cell_LL");
 
-Map.centerObject(cells, 8);
-Map.addLayer(cells);
+Map.centerObject(ADM, 8);
+Map.addLayer(ADM);
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -21,13 +21,27 @@ Map.addLayer(cells);
 //////////////////////////////////////////////////////////////////////////
 
 //2000
-var for_00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+var forest = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Percent_Tree_Cover").toBands();
 
-#Map.addLayer(for_00);
+var ADM = ADM.map(function(feature) {
+  return feature.set(forest.reduceRegion({
+    reducer: 'mean',
+    geometry: feature.geometry(),
+    scale: 10,
+    maxPixels: 1e9
+  }));
+});
 
+print(ADM);
+//Variable stored as "constant". Change to a more useful name
+var cells = cells.map(function(feat){
+  return ee.Feature(feat.geometry(), { 
+    for_2000: feat.get('constant'),
+  });
+});
 
-
+print(cells.limit(2));
 
 
 
