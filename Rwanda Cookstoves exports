@@ -8,6 +8,8 @@ var data = ee.ImageCollection('MODIS/006/MOD44B')
 
 print(data, "MODIS image clipped to Rwanda");
 
+//Open cell data
+
 //////////////////////////////////////////////////////////////////////////
 //
 //Nonforest vegetative cover exports
@@ -19,6 +21,8 @@ print(data, "MODIS image clipped to Rwanda");
 var veg_2000 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Percent_NonTree_Vegetation").toBands();
 
+print(veg_2000);
+
 Export.image.toDrive({
   image: veg_2000,
   scale: 250,
@@ -26,7 +30,7 @@ Export.image.toDrive({
   fileFormat: 'GEOTIFF',
   folder: "Cookstove_exports",
   maxPixels: 9e10,
-  region: studyRegion
+  region: studyRegion,
 });
 
 
