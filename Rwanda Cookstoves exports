@@ -512,15 +512,15 @@ Export.image.toDrive({
 
 
 //Subset data
-var quality_2009 = data.filter(ee.Filter.date('2009-01-01', '2009-12-31'))
+var quality_2010 = data.filter(ee.Filter.date('2010-01-01', '2010-12-31'))
 .select("Quality").toBands();
 
-var count_2009 = quality_2009.bitCount();
+var count_2010 = quality_2010.bitCount();
 
 Export.image.toDrive({
-  image: count_2009,
+  image: count_2010,
   scale: 250,
-  description: '2009_QualCount',
+  description: '2010_QualCount',
   fileFormat: 'GEOTIFF',
   folder: "Cookstove_exports",
   maxPixels: 9e10,
