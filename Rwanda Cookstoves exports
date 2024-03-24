@@ -10,39 +10,14 @@ print(data, "MODIS image clipped to Rwanda");
 
 //////////////////////////////////////////////////////////////////////////
 //
-//Year 2000 data exports
+//Nonforest vegetative cover exports
 //
 //////////////////////////////////////////////////////////////////////////
 
-//Tree cover
-var tree00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
-.select("Percent_Tree_Cover").toBands();
 
-var visParams = {min: 0, max: 100, palette: ['white', 'darkgreen'] 
-};
-
-Map.addLayer(tree00, visParams, "Forest cover in 2000");
-print(tree00, "Tree cover 2000 image");
-
-
-Export.image.toDrive({
-  image: tree00,
-  scale: 250,
-  description: '2000_PctForest',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
-
-
-//Nontree vegetative cover
+//2000
 var veg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Percent_NonTree_Vegetation").toBands();
-
-Map.addLayer(veg00, visParams, "Vegetation cover in 2000");
-print(veg00, "Vegetation cover 2000 image");
-
-
 
 Export.image.toDrive({
   image: veg00,
@@ -54,61 +29,18 @@ Export.image.toDrive({
 });
 
 
-
-//Nontree nonvegetative cover
-
-var nonveg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
-.select("Percent_NonVegetated").toBands();
-
-var visParams = {min: 0, max: 100, palette: ['white', 'black'] 
-};
-
-Map.addLayer(nonveg00, visParams, "Nonvegetative cover in 2000");
-print(nonveg00, "Nonvegetative cover 2000 image");
-
-
+//2000
+var veg01 = data.filter(ee.Filter.date('2001-01-01', '2001-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
 
 Export.image.toDrive({
-  image: nonveg00,
+  image: veg01,
   scale: 250,
-  description: '2000_PctNonveg',
+  description: '2001_PctVeg',
   fileFormat: 'GEOTIFF',
   folder: "Cookstove_exports",
   maxPixels: 9e10
 });
 
 
-
-//Quality
-
-//Export binary as numeric, convert to binary in R
-
-var quality00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
-.select("Quality").toBands();
-
-print(quality00, "Image quality assessment 2000");
-
-//Number of bytes equal to 1 - 2 or more is a sign the data is "bad"
-var count00 = quality00.bitCount();
-
-//Export
-Export.image.toDrive({
-  image: count00,
-  scale: 250,
-  description: '2000_QualCount',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
-
-
-
-Export.image.toDrive({
-  image: quality00,
-  scale: 250,
-  description: '2000_Quality',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
 
