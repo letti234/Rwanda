@@ -16,9 +16,30 @@ Map.addLayer(cells);
 
 //////////////////////////////////////////////////////////////////////////
 //
-//Nonforest vegetative cover exports
+//Forest cover
 //
 //////////////////////////////////////////////////////////////////////////
+
+//2000
+var for_00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+.select("Percent_Tree_Cover").toBands();
+
+#Map.addLayer(for_00);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //2000
 var veg_2000 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
