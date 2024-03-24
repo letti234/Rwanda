@@ -16,31 +16,21 @@ print(data, "MODIS image clipped to Rwanda");
 
 
 //2000
-var veg00 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+var veg_2000 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Percent_NonTree_Vegetation").toBands();
 
 Export.image.toDrive({
-  image: veg00,
+  image: veg_2000,
   scale: 250,
   description: '2000_PctVeg',
   fileFormat: 'GEOTIFF',
   folder: "Cookstove_exports",
-  maxPixels: 9e10
+  maxPixels: 9e10,
+  region: studyRegion
 });
 
 
-//2000
-var veg01 = data.filter(ee.Filter.date('2001-01-01', '2001-12-31'))
-.select("Percent_NonTree_Vegetation").toBands();
 
-Export.image.toDrive({
-  image: veg01,
-  scale: 250,
-  description: '2001_PctVeg',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 9e10
-});
 
 
 
