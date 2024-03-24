@@ -334,5 +334,116 @@ Export.image.toDrive({
 
 
 
+//////////////////////////////////////////////////////////////////////////
+//
+//Cell quality exports
+//
+//////////////////////////////////////////////////////////////////////////
+
+
+//Subset data
+var quality_2000 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+.select("Quality").toBands();
+
+var count_2000 = quality_2000.bitCount();
+
+Export.image.toDrive({
+  image: count_2000,
+  scale: 250,
+  description: '2000_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//Subset data
+var quality_2001 = data.filter(ee.Filter.date('2001-01-01', '2001-12-31'))
+.select("Quality").toBands();
+
+var count_2001 = quality_2001.bitCount();
+
+Export.image.toDrive({
+  image: count_2001,
+  scale: 250,
+  description: '2001_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//Subset data
+var quality_2002 = data.filter(ee.Filter.date('2002-01-01', '2002-12-31'))
+.select("Quality").toBands();
+
+var count_2002 = quality_2002.bitCount();
+
+Export.image.toDrive({
+  image: count_2002,
+  scale: 250,
+  description: '2002_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//Subset data
+var quality_2003 = data.filter(ee.Filter.date('2003-01-01', '2003-12-31'))
+.select("Quality").toBands();
+
+var count_2003 = quality_2003.bitCount();
+
+Export.image.toDrive({
+  image: count_2003,
+  scale: 250,
+  description: '2003_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//Subset data
+var quality_2004 = data.filter(ee.Filter.date('2004-01-01', '2004-12-31'))
+.select("Quality").toBands();
+
+var count_2004 = quality_2004.bitCount();
+
+Export.image.toDrive({
+  image: count_2004,
+  scale: 250,
+  description: '2004_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//Subset data
+var quality_2005 = data.filter(ee.Filter.date('2005-01-01', '2005-12-31'))
+.select("Quality").toBands();
+
+var count_2005 = quality_2005.bitCount();
+
+Export.image.toDrive({
+  image: count_2005,
+  scale: 250,
+  description: '2005_QualCount',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+
+
 
 
