@@ -173,4 +173,20 @@ var ADM = ADM.map(function(feature) {
   }));
 });
 
+
+//2010
+var forest = data.filter(ee.Filter.date('2010-01-01', '2010-12-31'))
+.select("Percent_Tree_Cover").toBands();
+
+forest= forest.select(['2010_03_06_Percent_Tree_Cover'])
+  .rename(['for_2010']);
+  
+var ADM = ADM.map(function(feature) {
+  return feature.set(forest.reduceRegion({
+    reducer: 'mean', geometry: feature.geometry(), scale: 250,
+    maxPixels: 1e9
+  }));
+});
+
+
 print(ADM.limit(1));
