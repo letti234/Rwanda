@@ -256,6 +256,82 @@ Export.image.toDrive({
 });
 
 
+//2016
+var veg_2016 = data.filter(ee.Filter.date('2016-01-01', '2016-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
+
+Export.image.toDrive({
+  image: veg_2016,
+  scale: 250,
+  description: '2016_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//2017
+var veg_2017 = data.filter(ee.Filter.date('2017-01-01', '2017-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
+
+Export.image.toDrive({
+  image: veg_2017,
+  scale: 250,
+  description: '2017_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+//2018
+var veg_2018 = data.filter(ee.Filter.date('2018-01-01', '2018-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
+
+Export.image.toDrive({
+  image: veg_2018,
+  scale: 250,
+  description: '2018_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+
+//2019
+var veg_2019 = data.filter(ee.Filter.date('2019-01-01', '2019-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
+
+Export.image.toDrive({
+  image: veg_2019,
+  scale: 250,
+  description: '2019_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
+
+
+//2020
+var veg_2020 = data.filter(ee.Filter.date('2020-01-01', '2020-12-31'))
+.select("Percent_NonTree_Vegetation").toBands();
+
+Export.image.toDrive({
+  image: veg_2020,
+  scale: 250,
+  description: '2020_PctVeg',
+  fileFormat: 'GEOTIFF',
+  folder: "Cookstove_exports",
+  maxPixels: 9e10,
+  region: studyRegion
+});
+
 
 
 
