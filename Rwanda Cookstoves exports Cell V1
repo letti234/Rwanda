@@ -329,8 +329,6 @@ var ADM = ADM.map(function(feature) {
   }));
 });
 
-Export.table.toDrive(ADM, "forest_cell", "Cookstove_exports");
-
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -1070,6 +1068,9 @@ qualMask= qualMask.select(['2004_03_05_Quality'])
 var qual = data.filter(ee.Filter.date('2005-01-01', '2005-12-31'))
   .select("Quality").toBands();
 
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
 qualMask= qualMask.select(['2005_03_06_Quality'])
   .rename(['qual_2005']);
   
@@ -1100,6 +1101,7 @@ qualMask= qualMask.select(['2006_03_06_Quality'])
 ///2007
 var qual = data.filter(ee.Filter.date('2007-01-01', '2007-12-31'))
   .select("Quality").toBands();
+
 
 //Classifies quality as "bad" when bit count >1
 var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
@@ -1339,3 +1341,6 @@ qualMask= qualMask.select(['2020_03_05_Quality'])
   
   
   print(ADM.limit(5));
+  
+  Export.table.toDrive(ADM, "MODIS_cell", "Cookstove_exports");
+
