@@ -1070,9 +1070,6 @@ qualMask= qualMask.select(['2004_03_05_Quality'])
 var qual = data.filter(ee.Filter.date('2005-01-01', '2005-12-31'))
   .select("Quality").toBands();
 
-//Classifies quality as "bad" when bit count >1
-var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
-
 qualMask= qualMask.select(['2005_03_06_Quality'])
   .rename(['qual_2005']);
   
@@ -1089,8 +1086,6 @@ var qual = data.filter(ee.Filter.date('2006-01-01', '2006-12-31'))
 
 //Classifies quality as "bad" when bit count >1
 var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
-
-Map.addLayer(qualMask);
 
 qualMask= qualMask.select(['2006_03_06_Quality'])
   .rename(['qual_2006']);
@@ -1109,8 +1104,6 @@ var qual = data.filter(ee.Filter.date('2007-01-01', '2007-12-31'))
 //Classifies quality as "bad" when bit count >1
 var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
 
-Map.addLayer(qualMask);
-
 qualMask= qualMask.select(['2007_03_06_Quality'])
   .rename(['qual_2007']);
   
@@ -1127,8 +1120,6 @@ var qual = data.filter(ee.Filter.date('2008-01-01', '2008-12-31'))
 
 //Classifies quality as "bad" when bit count >1
 var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
-
-Map.addLayer(qualMask);
 
 qualMask= qualMask.select(['2008_03_05_Quality'])
   .rename(['qual_2008']);
@@ -1147,8 +1138,6 @@ var qual = data.filter(ee.Filter.date('2009-01-01', '2009-12-31'))
 //Classifies quality as "bad" when bit count >1
 var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
 
-Map.addLayer(qualMask);
-
 qualMask= qualMask.select(['2009_03_06_Quality'])
   .rename(['qual_2009']);
   
@@ -1166,8 +1155,6 @@ var qual = data.filter(ee.Filter.date('2010-01-01', '2010-12-31'))
 //Classifies quality as "bad" when bit count >1
 var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
 
-Map.addLayer(qualMask);
-
 qualMask= qualMask.select(['2010_03_06_Quality'])
   .rename(['qual_2010']);
   
@@ -1177,5 +1164,178 @@ qualMask= qualMask.select(['2010_03_06_Quality'])
       maxPixels: 1e9
     }));
   });
+  
+///2011
+var qual = data.filter(ee.Filter.date('2011-01-01', '2011-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2011_03_06_Quality'])
+  .rename(['qual_2011']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+  
+///2012
+var qual = data.filter(ee.Filter.date('2012-01-01', '2012-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2012_03_05_Quality'])
+  .rename(['qual_2012']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+
+///2013
+var qual = data.filter(ee.Filter.date('2013-01-01', '2013-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2013_03_06_Quality'])
+  .rename(['qual_2013']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+  
+///2014
+var qual = data.filter(ee.Filter.date('2014-01-01', '2014-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2014_03_06_Quality'])
+  .rename(['qual_2014']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+
+///2015
+var qual = data.filter(ee.Filter.date('2015-01-01', '2015-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2015_03_06_Quality'])
+  .rename(['qual_2015']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+
+///2016
+var qual = data.filter(ee.Filter.date('2016-01-01', '2016-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2016_03_05_Quality'])
+  .rename(['qual_2016']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+  
+///2017
+var qual = data.filter(ee.Filter.date('2017-01-01', '2017-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2017_03_06_Quality'])
+  .rename(['qual_2017']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+  
+///2018
+var qual = data.filter(ee.Filter.date('2018-01-01', '2018-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2018_03_06_Quality'])
+  .rename(['qual_2018']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+  
+  
+///2019
+var qual = data.filter(ee.Filter.date('2019-01-01', '2019-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2019_03_06_Quality'])
+  .rename(['qual_2019']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+
+
+///2020
+var qual = data.filter(ee.Filter.date('2020-01-01', '2020-12-31'))
+  .select("Quality").toBands();
+
+//Classifies quality as "bad" when bit count >1
+var qualMask = bitwiseExtract(qual, 0, 7).lte(1);
+
+qualMask= qualMask.select(['2020_03_05_Quality'])
+  .rename(['qual_2020']);
+  
+  var ADM = ADM.map(function(feature) {
+    return feature.set(qualMask.reduceRegion({
+      reducer: 'mean', geometry: feature.geometry(), scale: 250,
+      maxPixels: 1e9
+    }));
+  });
+  
   
   print(ADM.limit(5));
