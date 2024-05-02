@@ -17,25 +17,23 @@ var geometry =
 
 //////////////////////////////////////////////////////////////////////////////////
 //
-// Determine dry season (Jan-Feb) composites for zonal statistics
+// Jan-Feb composites for zonal statistics
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-//LULC classifications subset to ROI
-var lulc = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
- .map(function(image){return image.clip(geometry)})
- .select("label");
-
-
-//June 2017 to August 2016
-var lc_16 = lulc
+//2016
+var lc_16 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
   .filterDate("2016-06-01", "2016-08-31")
-.reduce(ee.Reducer.mode());
- 
+  .filterBounds(geometry).select("label")
+  .reduce(ee.Reducer.mode()).clip(geometry);
+
+
+
+
 
 // //////////////////////////////////////////////////////////////////////////////////
 // //
-// // Map dry season composites
+// // Map dry season composite
 // //
 // //////////////////////////////////////////////////////////////////////////////////
 
@@ -47,7 +45,7 @@ var dwVisParams = {
 Map.centerObject(geometry, 8);
 
 
-Map.addLayer(lc_16, dwVisParams, 'Land cover 2017');
+Map.addLayer(lc_16, dwVisParams, 'Land cover 2016');
 
 // //////////////////////////////////////////////////////////////////////////////////
 // //
@@ -63,6 +61,8 @@ Export.image.toDrive({
   fileFormat: 'GEOTIFF',
   folder: "Cookstove_exports",
   maxPixels: 9e12,
+  crs:
+  crsTransform: 
   
 });
 
