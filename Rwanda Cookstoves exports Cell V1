@@ -1782,4 +1782,7 @@ var ADM = ADM.map(function(feature) {
 print(ADM.limit(2));
 
 
+  
+Export.table.toDrive(ADM, "MODIS_cell_V2", "Cookstove_exports");
+
 
