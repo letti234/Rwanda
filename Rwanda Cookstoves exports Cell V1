@@ -1,8 +1,9 @@
 
-//Open MODIS data and clip to geometry
+//Rwanda shapefile (ADM0)
 var studyRegion = ee.FeatureCollection("FAO/GAUL/2015/level0")
 .filter(ee.Filter.eq("ADM0_NAME", "Rwanda"));
 
+//Open MODIS data and clip to geometry
 var data = ee.ImageCollection('MODIS/006/MOD44B')
 .map(function(image){return image.clip(studyRegion)});
 
@@ -24,10 +25,13 @@ Map.addLayer(ADM);
 var forest = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
 .select("Percent_Tree_Cover").toBands();
 
+print(forest, "Forest pre");
 
 forest= forest.select(['2000_03_05_Percent_Tree_Cover'])
   .rename(['for_2000']);
-  
+
+print(forest, "Forest post");
+
 var ADM = ADM.map(function(feature) {
   return feature.set(forest.reduceRegion({
     reducer: 'mean',
@@ -1342,5 +1346,440 @@ qualMask= qualMask.select(['2020_03_05_Quality'])
   
   print(ADM.limit(5));
   
-  Export.table.toDrive(ADM, "MODIS_cell", "Cookstove_exports");
+  // Export.table.toDrive(ADM, "MODIS_cell", "Cookstove_exports");
+
+
+//////////////////////////////////////////////////////////////
+//
+// World Pop
+//
+//////////////////////////////////////////////////////////////
+
+
+//Open WorldPop data and clip to geometry
+var data = ee.ImageCollection('WorldPop/GP/100m/pop')
+.filter(ee.Filter.eq('country', 'RWA'));
+
+print(data);
+
+//Zonal stats
+
+  //2000
+  
+  //Filter to 2000 only, transform into one band
+  var pop = data.filter(ee.Filter.eq("year", 2000))
+  .select("population").toBands();
+
+  //Rename the variable for easier future use
+  pop= pop.select(['RWA_2000_population'])
+  .rename(['pop_2000']);
+  
+  //Reducer - summative for each cell
+  var ADM = ADM.map(function(feature) {
+    return feature.set(pop.reduceRegion({
+      reducer: 'sum', geometry: feature.geometry(), scale: 100,
+      maxPixels: 1e9
+    }));
+  });
+  
+  
+  
+  //2001
+  
+  //Filter to 2001 only, transform into one band
+  var pop = data.filter(ee.Filter.eq("year", 2001))
+  .select("population").toBands();
+
+  //Rename the variable for easier future use
+  pop= pop.select(['RWA_2001_population'])
+  .rename(['pop_2001']);
+  
+  //Reducer - summative for each cell
+  var ADM = ADM.map(function(feature) {
+    return feature.set(pop.reduceRegion({
+      reducer: 'sum', geometry: feature.geometry(), scale: 100,
+      maxPixels: 1e9
+    }));
+  });
+
+
+  //2002
+
+    //Filter to 2002 only, transform into one band
+    var pop = data.filter(ee.Filter.eq("year", 2002))
+    .select("population").toBands();
+
+    //Rename the variable for easier future use
+    pop= pop.select(['RWA_2002_population'])
+    .rename(['pop_2002']);
+
+    //Reducer - summative for each cell
+    var ADM = ADM.map(function(feature) {
+      return feature.set(pop.reduceRegion({
+        reducer: 'sum', geometry: feature.geometry(), scale: 100,
+         maxPixels: 1e9
+    }));
+    });
+
+
+    //2003
+
+//Filter to 2003 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2003))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2003_population'])
+.rename(['pop_2003']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2004
+
+//Filter to 2004 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2004))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2004_population'])
+.rename(['pop_2004']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2005
+
+//Filter to 2005 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2005))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2005_population'])
+.rename(['pop_2005']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+
+//2006
+
+//Filter to 2006 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2006))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2006_population'])
+.rename(['pop_2006']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2007
+
+//Filter to 2007 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2007))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2007_population'])
+.rename(['pop_2007']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+
+//2008
+
+//Filter to 2008 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2008))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2008_population'])
+.rename(['pop_2008']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2009
+
+//Filter to 2009 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2009))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2009_population'])
+.rename(['pop_2009']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+//2010
+
+//Filter to 2010 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2010))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2010_population'])
+.rename(['pop_2010']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+//2011
+
+//Filter to 2011 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2011))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2011_population'])
+.rename(['pop_2011']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2012
+
+//Filter to 2012 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2012))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2012_population'])
+.rename(['pop_2012']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2013
+
+//Filter to 2013 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2013))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2013_population'])
+.rename(['pop_2013']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2014
+
+//Filter to 2014 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2014))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2014_population'])
+.rename(['pop_2014']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2015
+
+//Filter to 2015 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2015))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2015_population'])
+.rename(['pop_2015']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2016
+
+//Filter to 2016 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2016))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2016_population'])
+.rename(['pop_2016']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+//2017
+
+//Filter to 2017 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2017))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2017_population'])
+.rename(['pop_2017']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2018
+
+//Filter to 2018 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2018))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2018_population'])
+.rename(['pop_2018']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2019
+
+//Filter to 2019 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2019))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2019_population'])
+.rename(['pop_2019']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+
+
+//2020
+
+//Filter to 2020 only, transform into one band
+var pop = data.filter(ee.Filter.eq("year", 2020))
+.select("population").toBands();
+
+//Rename the variable for easier future use
+pop= pop.select(['RWA_2020_population'])
+.rename(['pop_2020']);
+
+//Reducer - summative for each cell
+var ADM = ADM.map(function(feature) {
+  return feature.set(pop.reduceRegion({
+    reducer: 'sum', geometry: feature.geometry(), scale: 100,
+    maxPixels: 1e9
+  }));
+});
+
+print(ADM.limit(2));
+
+
 
