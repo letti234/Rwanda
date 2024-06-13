@@ -1,54 +1,40 @@
+//Vegetation mapping for Rwanda
+//6-13-2024
 
 
-// //  -----------------------------------------------------------------------
-// //  Call data
-// //  -----------------------------------------------------------------------
 
-
-//Resources from the book chapter
+//This is a set of functions developed by a user for "continuous change detection", 
+//which seeks breaks in time series to identify land cover change. We do
+//not need to do a change detection analysis for now (it's a bit complicated)
+//BUT the great thing about these tools is that the developer put all of the Landsat
+//NDVI data in one place, so we don't have to call on the satellites separately.
 var utils = require(
     'users/parevalo_bu/gee-ccdc-tools:ccdcUtilities/api');
-
-var palettes = require('users/gena/packages:palettes');
-
-
-//Forward and backward paths from HYSPLIT
-var fPaths = ee.FeatureCollection("users/salem043/Locusts/HYSPLIT/fwd_traj_output");
-var bPaths = ee.FeatureCollection("users/salem043/Locusts/HYSPLIT/bwd_traj_output");
-
-//FAO sightings data for 2014 only
-var swarms = ee.FeatureCollection("users/salem043/Locusts/FAO_data/Swarm_Master");
-var startDateMin = ee.Date('2014-01-01').millis();
-var startDateMax = ee.Date('2014-12-31').millis();
-var swarms = swarms.filter(ee.Filter.rangeContains('STARTDATE', startDateMin, startDateMax));
-
 
 // Regin of interest
 var studyRegion = ee.FeatureCollection("FAO/GAUL/2015/level0")
 .filter(ee.Filter.eq("ADM0_NAME", "Rwanda"));
 
-// var studyRegion = geometry;
 
 Map.centerObject(studyRegion, 6);
 
 //  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  CCDC algorithm with MODIS NDVI
+//  Call on the NDVI image collection
 //  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// Define start, end dates and Landsat bands to use.
-var startDate = '1998-01-01';
-var endDate = '2024-01-01';
+var params = {
+  start: '2000-01-01',
+  end: '2020-12-31',
+  StudyRegion: studyRegion
+};
+
 var bands = ['NDVI'];
 
 
-// Retrieve all clear, Landsat 4, 5, 7 and 8 observations (Collection 2, Tier 1).
-var filteredLandsat = utils.Inputs.getLandsat({
-        collection: 2
-    })
-    .filterBounds(studyRegion)
-    .filterDate(startDate, endDate)
-    .select(bands)
-    .map(function(image){return image.clip(studyRegion)});
-
-print(filteredLandsat.first());
-
+// Filter by date and a location in Brazil
+var filteredLandsat = utils.Inputs.getLandsat()
+    .filterBounds(params.StudyRegion)
+    .filterDate(params.start, params.end)
+    .select(bands);
+    
+print(filteredLandsat);
