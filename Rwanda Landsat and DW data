@@ -1,7 +1,11 @@
 //Vegetation mapping for Rwanda: Landsat NDVI 2000-2020 and Dynamic World
 //6-13-2024
 
-
+//**********************************************************************************
+//
+// Landsat NDVI
+//
+//**********************************************************************************
 
 //This is a set of functions developed by a user for "continuous change detection", 
 //which seeks breaks in time series to identify land cover change. We do
@@ -54,11 +58,128 @@ var ndvi_masked = filteredLandsat.map(function(image){
 
 
 //  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  Create annual composite using the median value
+//  Create annual composite using the median value - 2000
 //  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var ndvi_2000 = ndvi.masked
+
+var ndvi_2000 = ndvi_masked
   .filterDate("2000-01-01", "2000-12-31")
-  .reduce(ee.Reducer.median());
+  .reduce(ee.Reducer.median()).clip(params.StudyRegion);
+
+//Map check
+var visParams = {
+  min: 0,
+  max: 1,
+  palette: ['ffffff', '228B22']  // White to forest green
+};
+
+Map.addLayer(ndvi_2000, visParams, "NDVI composite in 2000");
+
+//Water bodies are clearly filtered. Some additional data is missing. That could be okay for our purposes
+
+
+
+//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Create annual composite using the median value for all years (2000-2020)
+//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//I'm still searching for code that helps us build a function that can perform the image
+//reduction above but for all years, so we don't have to copy-paste for every year separately
+
+
+
+
+
+//**********************************************************************************
+//
+// Dynamic World composites - uses annual composites for each year
+//
+//**********************************************************************************
+
+
+//Note: I take the copy-paste approach to getting each annual composite. Hopefully we can
+//figure out how to do this using a function
+
+//2016
+var lc_16 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2016-01-01", "2016-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2017
+var lc_17 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2017-01-01", "2017-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2018
+var lc_18 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2018-01-01", "2018-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2019
+var lc_19 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2019-01-01", "2019-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2020
+var lc_20 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2020-01-01", "2020-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2021
+var lc_21 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2021-01-01", "2021-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2022
+var lc_22 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2022-01-01", "2022-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+//2023
+var lc_23 = ee.ImageCollection("GOOGLE/DYNAMICWORLD/V1")
+  .filterDate("2023-01-01", "2023-12-31")
+  .filterBounds(studyRegion).select("label")
+  .reduce(ee.Reducer.mode()).clip(studyRegion);
+
+
+
+
+
+
+// //////////////////////////////////////////////////////////////////////////////////
+// //
+// // Map dry season composite
+// //
+// //////////////////////////////////////////////////////////////////////////////////
+
+var dwVisParams = {
+  min: 0, max:8,
+  palette: ['#419bdf', '#397d49', '#88b053', '#7a87c6', '#e49635', '#dfc35a', '#c4281b', '#a59b8f', '	#b39fe1']
+};
+
+
+
+Map.addLayer(lc_16, dwVisParams, 'Land cover 2016');
+Map.addLayer(lc_17, dwVisParams, 'Land cover 2017');
+Map.addLayer(lc_18, dwVisParams, 'Land cover 2018');
+Map.addLayer(lc_19, dwVisParams, 'Land cover 2019');
+Map.addLayer(lc_20, dwVisParams, 'Land cover 2020');
+Map.addLayer(lc_21, dwVisParams, 'Land cover 2021');
+Map.addLayer(lc_22, dwVisParams, 'Land cover 2022');
+Map.addLayer(lc_23, dwVisParams, 'Land cover 2023');
 
 
