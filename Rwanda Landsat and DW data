@@ -1,4 +1,4 @@
-//Vegetation mapping for Rwanda
+//Vegetation mapping for Rwanda: Landsat NDVI 2000-2020 and Dynamic World
 //6-13-2024
 
 
@@ -38,3 +38,27 @@ var filteredLandsat = utils.Inputs.getLandsat()
     .select(bands);
     
 print(filteredLandsat);
+
+
+//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Mask out water - NDVI values over water are negative
+//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var waterOcc = ee.Image("JRC/GSW1_0/GlobalSurfaceWater").select('occurrence'),
+    jrc_data0 = ee.Image("JRC/GSW1_0/Metadata").select('total_obs').lte(0),
+    waterOccFilled = waterOcc.unmask(0).max(jrc_data0),
+    waterMask = waterOccFilled.lt(50);
+    
+var ndvi_masked = filteredLandsat.map(function(image){
+  return image.updateMask(waterMask)  });
+
+
+//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Create annual composite using the median value
+//  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+var ndvi_2000 = ndvi.masked
+  .filterDate("2000-01-01", "2000-12-31")
+  .reduce(ee.Reducer.median());
+
+
