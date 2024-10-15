@@ -1,45 +1,95 @@
-//Rwanda data
-//Rwanda shapefile (ADM0)
+//Rwanda forest data extraction
+//Colette Salemi
+//ECON 499
+//Fall 2024
+
+//Open data //////////////////////////////////////////////////////////
+//Note that you can open data directly from the GEE Cloud. We can filter
+//data using data properties
+
+//Rwanda shapefile (ADM0) - A feature collection (shapefile)
 var studyRegion = ee.FeatureCollection("FAO/GAUL/2015/level0")
 .filter(ee.Filter.eq("ADM0_NAME", "Rwanda"));
 
-//Open MODIS data and clip to geometry
+//Open MODIS data - an image collection (stack of rasters)
+//and clip to Rwanda's geometry
 var data = ee.ImageCollection('MODIS/006/MOD44B')
 .map(function(image){return image.clip(studyRegion)});
 
+//We can print the resulting data objects
 print(data, "MODIS image clipped to Rwanda");
 
 
-//Image exports for presentation
-var forest_2000 = data.filter(ee.Filter.date('2000-01-01', '2000-12-31'))
+//Extract relevant bands for export - forest cover ///////////////////
+
+//Image extraction - forest cover in 2005
+var forest_2005 = data.filter(ee.Filter.date('2005-01-01', '2005-12-31'))
 .select("Percent_Tree_Cover").toBands();
 
 
-var forest_2020 = data.filter(ee.Filter.date('2020-01-01', '2020-12-31'))
-.select("Percent_Tree_Cover").toBands();
+
+//Quality mapping ////////////////////////////////////////////////////
+
+//Sometimes map data requires extra transformations. In this case, the
+//quality indicator is stored as an 8-bit variable. This is a set of 8 
+//binary indicators (ex: 0 0 1 0 0 1 0 0) that are transformed into a
+//1-3 digit number. The MODIS guidebook tells us that if 2 or more of the 
+//1's in the series of binary numbers is 1, then the pixel classification
+//is of "low quality". Low quality is often due to cloud cover, but could
+//also be due to surface reflectance, problems with the satellite, etc.
 
 
+//Extract only the quality variable, which is currently stored in a way
+//that makes it hard to work with
+var quality_2005 = data.filter(ee.Filter.date('2005-01-01', '2005-12-31'))
+.select("Quality").toBands();
 
+//We don't have time to get into this function, but it counts cases where
+//the quality variable has 2 or more 1's in the set of 8-number "bits".
+var bitwiseExtract = function(input, fromBit, toBit) {
+  var maskSize = ee.Number(1).add(toBit).subtract(fromBit);
+  var mask = ee.Number(1).leftShift(maskSize).subtract(1);
+  return input.rightShift(fromBit).bitwiseAnd(mask);
+};
+
+//Applying the function to the quality layer
+var qualMask05 = bitwiseExtract(quality_2005, 0, 7).lte(1);
+print(qualMask05, "0-1 indicator for whether there are 2 or more quality flags");
+
+//Mapping in the GEE interface /////////////////////////////////////
+//we can't export maps, but we can inspect the maps
+
+Map.centerObject(studyRegion, 7);
+Map.addLayer(forest_2005, {min: 0, max: 100, palette: ['white', 'green']} , "Pct Forest in 2005");
+
+Map.addLayer(qualMask05, {min: 0, max: 1, palette: ['white', 'red']} , "Good pixel classification");
+print(qualMask05, "Image quality assessment 2000");
+
+
+//Exporting data for class
 Export.image.toDrive({
-  image: forest_2000,
-  scale: 250,
-  description: 'RWA_for_2000_MODIS',
-  fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
-  maxPixels: 2e12,
-  region: studyRegion,
-  crs: "EPSG:32736"
+  image: forest_2005, //Layer to export
+  scale: 250, //Resolution of data
+  description: 'pctForest2005', //Name of new map
+  fileFormat: 'GEOTIFF', //Storing as a geotiff, common raster storage
+  folder: "Intro to GIS", //Send to this folder in GDrive
+  maxPixels: 2e12, //Set the max pixels high so the export doesn't cancel
+  region: studyRegion, //Ensure export is for Rwanda only
+  crs: "EPSG:32736" //Export in WGS 84
 });
 
 
+//Exporting data for class
 Export.image.toDrive({
-  image: forest_2020,
+  image: qualMask05,
   scale: 250,
-  description: 'RWA_for_2020_MODIS',
+  description: 'pixelQuality2005',
   fileFormat: 'GEOTIFF',
-  folder: "Cookstove_exports",
+  folder: "Intro to GIS",
   maxPixels: 2e12,
   region: studyRegion,
-  crs: "EPSG:32736"
+  crs: "EPSG:32736" 
 });
+
+
 
